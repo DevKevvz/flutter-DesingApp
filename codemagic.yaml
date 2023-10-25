@@ -1,34 +1,24 @@
 workflow:
   name: CI/CD to App Center
 
-jobs:
-  - name: build
-    script:
-      - flutter build apk --release
+  jobs:
+    - name: build
+      script:
+        - flutter build apk --release
 
-  - name: test
-    script:
-      - flutter test
+    - name: test
+      script:
+        - flutter test
 
-  - name: deploy_to_app_center
-    script:
-      - |
-        # Aquí configuramos las variables necesarias para el despliegue en App Center
-        APP_CENTER_API_TOKEN=$APP_CENTER_API_TOKEN
-        APP_CENTER_OWNER_NAME=Kevvz
-        APP_CENTER_APP_NAME=codemagicTest
-        APP_FILE=./build/app/outputs/flutter-apk/app-release.apk
+    - name: deploy_to_app_center
+      script:
+        - |
+          # Aquí configuramos las variables necesarias para el despliegue en App Center
+          APP_CENTER_API_TOKEN=$APP_CENTER_API_TOKEN
+          APP_CENTER_OWNER_NAME=Kevvz
+          APP_CENTER_APP_NAME=codemagicTest
+          APP_FILE=./build/app/outputs/flutter-apk/app-release.apk
 
-        # Desplegamos la aplicación en App Center
-        appcenter distribute release -f $APP_FILE -g $APP_CENTER_OWNER_NAME/$APP_CENTER_APP_NAME -a $APP_CENTER_API_TOKEN
+          # Desplegamos la aplicación en App Center
+          appcenter distribute release -f $APP_FILE -g $APP_CENTER_OWNER_NAME/$APP_CENTER_APP_NAME -a $APP_CENTER_API_TOKEN
 
-workflows:
-  build-test-deploy:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - deploy_to_app_center:
-          requires:
-            - build
