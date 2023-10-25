@@ -1,24 +1,27 @@
-workflow:
-  name: CI/CD to App Center
-
-  jobs:
-    - name: build
-      script:
-        - flutter build apk --release
-
-    - name: test
-      script:
-        - flutter test
-
-    - name: deploy_to_app_center
-      script:
-        - |
-          # Aquí configuramos las variables necesarias para el despliegue en App Center
+workflows:
+  android-deployment:
+    name: Despliegue en App Center (Android)
+    instance_type: mac_mini_m1
+    max_build_duration: 120
+    environment:
+      android_signing:
+        - keystore_reference
+      groups:
+        - google_play
+      vars:
+        PACKAGE_NAME: "io.codemagic.flutteryaml" # Reemplaza con el nombre de tu paquete
+      flutter: stable
+    scripts:
+      - name: Construir APK con Flutter
+        script: |
+          flutter build apk --release
+      - name: Desplegar en App Center
+        script: |
+          # Configura las variables necesarias para el despliegue en App Center
           APP_CENTER_API_TOKEN=$APP_CENTER_API_TOKEN
-          APP_CENTER_OWNER_NAME=Kevvz
-          APP_CENTER_APP_NAME=codemagicTest
+          APP_CENTER_OWNER_NAME=Kevvz # Reemplaza con el nombre de tu organización o usuario en App Center
+          APP_CENTER_APP_NAME=codemagicTest # Reemplaza con el nombre de tu aplicación en App Center
           APP_FILE=./build/app/outputs/flutter-apk/app-release.apk
 
-          # Desplegamos la aplicación en App Center
+          # Despliega la aplicación en App Center
           appcenter distribute release -f $APP_FILE -g $APP_CENTER_OWNER_NAME/$APP_CENTER_APP_NAME -a $APP_CENTER_API_TOKEN
-
