@@ -23,7 +23,6 @@ jobs:
         appcenter distribute release -f $APP_FILE -g $APP_CENTER_OWNER_NAME/$APP_CENTER_APP_NAME -a $APP_CENTER_API_TOKEN
 
 workflows:
-  version: 2
   build-test-deploy:
     jobs:
       - build
